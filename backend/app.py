@@ -3,8 +3,9 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
+
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
+CORS(app, supports_credentials=True, origins=["http://localhost:3000", "http://127.0.0.1:3000"])
 app.secret_key = 'supersecretkey'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 db = SQLAlchemy(app)
@@ -19,6 +20,18 @@ class ScoreHistory(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     password = db.Column(db.String(200))
     score = db.Column(db.Integer)
+
+def current_user():
+    if "user_id" in session:
+        return User.query.get(session["user_id"])
+    return None
+
+@app.after_request
+def apply_cors_headers(response):
+    response.headers["Access-Control-Allow-Credentials"] = "true"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    response.headers["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
+    return response
 
 @app.route("/register", methods=["POST"])
 def register():
@@ -43,9 +56,15 @@ def login():
         return jsonify({"message": "Login successful"})
     return jsonify({"message": "Invalid credentials"}), 401
 
+@app.route("/logout", methods=["POST"])
+def logout():
+    session.clear()
+    return jsonify({"message": "Logged out"})
+
 @app.route("/evaluate", methods=["POST"])
 def evaluate():
-    if "user_id" not in session:
+    user = current_user()
+    if not user:
         return jsonify({"message": "Unauthorized"}), 403
     data = request.get_json()
     password = data.get("password", "")
@@ -56,16 +75,17 @@ def evaluate():
         score -= 20
     if password.isalnum():
         score -= 25
-    history = ScoreHistory(user_id=session["user_id"], password=password, score=max(score, 0))
+    history = ScoreHistory(user_id=user.id, password=password, score=max(score, 0))
     db.session.add(history)
     db.session.commit()
     return jsonify({"score": max(score, 0)})
 
 @app.route("/history", methods=["GET"])
 def history():
-    if "user_id" not in session:
+    user = current_user()
+    if not user:
         return jsonify({"message": "Unauthorized"}), 403
-    entries = ScoreHistory.query.filter_by(user_id=session["user_id"]).all()
+    entries = ScoreHistory.query.filter_by(user_id=user.id).all()
     return jsonify([{"password": e.password, "score": e.score} for e in entries])
 
 if __name__ == "__main__":
