@@ -1,25 +1,25 @@
-# 🛡️ Cyber Hygiene Score App
+# Cyber Hygiene Score App
 
 A full-stack web application to help users understand and improve their cybersecurity practices. It evaluates password strength and simulates browser behavior to produce a "Cyber Hygiene Score".
 
 ---
 
-## 🚀 Features
+## Features
 
-### 👤 Authentication
+### Authentication
 - User registration & login using session-based auth
 - Passwords securely hashed
 
-### 🧠 Password Evaluation
+### Password Evaluation
 - Checks for:
   - Length
   - Symbol usage
   - Upper/lowercase diversity
 
-### 📊 Score History
+### Score History
 - Logged-in users can view historical password evaluations
 
-### 🕵️‍♂️ Simulated Browser Behavior
+### Simulated Browser Behavior
 - Password reuse
 - HTTPS usage
 - Flagged domain visits
@@ -28,7 +28,7 @@ A full-stack web application to help users understand and improve their cybersec
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 **Frontend:** React  
 **Backend:** Flask + SQLite  
@@ -37,7 +37,7 @@ A full-stack web application to help users understand and improve their cybersec
 
 ---
 
-## 📦 Installation
+## Installation
 
 ### 1. Clone the Repository
 
@@ -66,7 +66,7 @@ npm start
 
 ---
 
-## 📬 API Endpoints
+## API Endpoints
 
 | Endpoint     | Method | Description             |
 |--------------|--------|-------------------------|
@@ -77,7 +77,7 @@ npm start
 
 ---
 
-## ✅ Future Improvements
+## Future Improvements
 
 - Docker containerization
 - Real browser behavior integration (via browser extension)
@@ -86,12 +86,12 @@ npm start
 
 ---
 
-## 👨‍💻 Author
+## Author
 
 Kelvin Odamtten
 
 ---
 
-## 📝 License
+## License
 
 MIT License
