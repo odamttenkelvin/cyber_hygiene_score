@@ -5,7 +5,13 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True, origins=["http://localhost:3000", "http://127.0.0.1:3000"])
+CORS(app, supports_credentials=True, resources={
+    r"/*": {"origins": [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000"
+    ]}
+})
+
 app.secret_key = 'supersecretkey'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 db = SQLAlchemy(app)
@@ -44,6 +50,11 @@ def register():
     db.session.add(new_user)
     db.session.commit()
     return jsonify({"message": "Registered successfully"})
+
+@app.route("/", methods=["GET"])
+def root():
+    return jsonify({"ok": True, "service": "cyber-hygiene-api"})
+
 
 @app.route("/login", methods=["POST"])
 def login():
